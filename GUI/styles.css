@@ -127,7 +127,6 @@ main {
 }
 
 .hero-secondary,
-.brand-story,
 .product-teaser,
 .custom-made {
   padding: 0 10vw;
@@ -145,14 +144,12 @@ main {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  padding: 36px;
-  margin-right: 50px;
-  margin-left: 50px;
-  
+  margin: 0 10vw;
 }
 
 .brand-story-media {
   max-width: 500px;
+  margin: 20px;
   aspect-ratio: 1 / 1;
   height: auto;
   border-radius: var(--radius-lg);
@@ -656,7 +653,7 @@ main {
   color: var(--color-ink);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .hero-secondary-content,
   .brand-story,
   .product-teaser,
@@ -666,6 +663,7 @@ main {
     gap: 16px;
   }
 
+  
   .hero-claim {
     font-size: 1.15rem;
     display: flex;
@@ -685,10 +683,13 @@ main {
     width: 100%;
   }
 
-  .page-hero,
   .contact-section,
   .legal-content {
     padding: 0 16px;
+  }
+
+  .page-hero{
+    padding: 0 10vw;
   }
 
   .about-feature{
