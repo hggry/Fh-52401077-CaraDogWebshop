@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kontakt - CaraDog</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <div class="logo-wrap">
+          <img src="assets/Logo/CaraDog_Logo.png" alt="CaraDog Logo" class="logo" />
+          <p class="logo-text">handgemachte Hundemode</p>
+        </div>
+        <nav class="site-nav" aria-label="Hauptnavigation">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="index.html">Start</a></li>
+            <li><a class="nav-link" href="index.html#products">Shop</a></li>
+            <li><a class="nav-link" href="index.html#custom-made">Maßanleitung</a></li>
+            <li><a class="nav-link" href="aboutUs.html">Über uns</a></li>
+            <li><a class="nav-link is-active" href="contact.html">Kontakt</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main>
+        <section class="page-hero">
+          <h1>Kontakt</h1>
+          <p>
+            Schreib uns eine Nachricht oder frag nach einer individuellen Anfertigung.
+            Die Anfrage wird als C#-API-Mock simuliert und wir melden uns per E-Mail.
+          </p>
+        </section>
+
+        <section class="contact-section">
+          <form class="contact-card" id="contact-form">
+            <div class="form-field">
+              <label for="contact-name">Name</label>
+              <input class="form-input" id="contact-name" name="name" type="text" required />
+            </div>
+            <div class="form-field">
+              <label for="contact-email">E-Mail</label>
+              <input class="form-input" id="contact-email" name="email" type="email" required />
+            </div>
+            <div class="form-field">
+              <label for="contact-message">Nachricht</label>
+              <textarea class="form-textarea" id="contact-message" name="message" required></textarea>
+            </div>
+            <button class="button button-primary" type="submit">Nachricht senden</button>
+            <div id="contact-status" class="form-status" aria-live="polite"></div>
+          </form>
+
+          <div class="contact-card contact-details">
+            <h2>Direkt erreichbar</h2>
+            <p>Wir antworten normalerweise innerhalb von 24 Stunden.</p>
+            <p>E-Mail: <a href="mailto:hallo@caradog.de">hallo@caradog.de</a></p>
+            <p>Instagram: <a href="https://instagram.com" target="_blank" rel="noreferrer">@caradog</a></p>
+            <p>Atelier: Wien &amp; Umgebung</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>CaraDog - Handmade Hundezubehör mit Herz.</p>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
