@@ -1,0 +1,40 @@
+{
+  "categories": [
+    {
+      "name": "Snacks",
+      "description": "Belohnungen und Kauartikel"
+    },
+    {
+      "name": "Spielzeug",
+      "description": "Robuste Toys fuer Hunde"
+    }
+  ],
+  "products": [
+    {
+      "name": "Lammstreifen 100g",
+      "description": "Naturbelassene Lammstreifen",
+      "sku": "SNACK-LAMM-100",
+      "netPrice": 4.99,
+      "isSoldOut": false,
+      "categoryName": "Snacks"
+    },
+    {
+      "name": "Tau-Spielball",
+      "description": "Kombi aus Tau und Ball",
+      "sku": "TOY-ROPE-001",
+      "netPrice": 9.5,
+      "isSoldOut": false,
+      "categoryName": "Spielzeug"
+    }
+  ],
+  "inventories": [
+    {
+      "productSku": "SNACK-LAMM-100",
+      "quantity": 120
+    },
+    {
+      "productSku": "TOY-ROPE-001",
+      "quantity": 40
+    }
+  ]
+}

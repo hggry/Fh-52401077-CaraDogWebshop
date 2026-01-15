@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CaraDog.Core\CaraDog.Core.csproj" />
+    <ProjectReference Include="..\CaraDog.Db\CaraDog.Db.csproj" />
+    <ProjectReference Include="..\CaraDog.DTO\CaraDog.DTO.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
