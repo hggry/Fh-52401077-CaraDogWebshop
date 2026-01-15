@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mysql:8.0
+    env_file:
+      - ./env.dev
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend/Dockerfile
+    env_file:
+      - ./env.dev
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+
+volumes:
+  db_data:
