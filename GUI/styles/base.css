@@ -1,0 +1,225 @@
+:root {
+  --color-primary: #0b3953;
+  --color-primary-muted: #517487;
+  --color-accent: #fc814a;
+  --color-nature: #8b9556;
+  --color-bg: #fff8f0;
+  --color-ink: #1c2c36;
+  --color-ink-muted: #4b5d68;
+  --color-surface: #ffffff;
+  --shadow-soft: 0 18px 40px rgba(11, 57, 83, 0.12);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --transition: 200ms ease;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.page {
+  min-height: 100vh;
+}
+
+body { 
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+  color: var(--color-ink);
+  background: linear-gradient(180deg, #fff8f0 0%, #f3f5f2 100%);
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  font-size: large;
+}
+
+h1, h2, h3 {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-family: "Playfair Display";
+}
+
+p {
+  color: var(--color-ink-muted);
+  font-size: large;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 12px;
+}
+
+.logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.logo {
+  width: 10em;
+  height: auto;
+}
+.logo-text {
+  text-align: center;
+  font-family: "Garamond";
+}
+
+.site-nav {
+  width: 100%;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 22px;
+}
+
+.site-footer {
+  padding: 40px 16px 56px;
+  color: var(--color-ink-muted);
+  background: rgba(11, 57, 83, 0.04);
+  margin-top: 60px;
+}
+
+.footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-brand {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.95rem;
+}
+
+.footer-links a {
+  color: var(--color-primary);
+}
+
+.nav-link {
+  font-size: 1rem;
+  letter-spacing: 0.4px;
+  color: var(--color-primary);
+  padding: 6px 10px;
+  transition: color var(--transition), background-color var(--transition);
+  border-radius: 999px;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background-color: rgba(11, 57, 83, 0.08);
+}
+
+.nav-link.is-active {
+  background-color: rgba(252, 129, 74, 0.2);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.nav-link.is-disabled {
+  color: rgba(11, 57, 83, 0.35);
+  pointer-events: none;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 70px;
+  padding-bottom: 80px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.button:hover,
+.button:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(11, 57, 83, 0.15);
+}
+
+.button-primary {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.button-secondary {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.button-outline {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.heart-orange {
+    color: var(--color-accent);
+    opacity: 50%;   
+
+}
+
+.pictogram-dog-women{
+  max-width: 100px;
+}
+
