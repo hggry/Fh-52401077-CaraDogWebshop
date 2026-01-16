@@ -34,7 +34,7 @@
       "launchBrowser": true,
       "launchUrl": "api/products",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"y
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

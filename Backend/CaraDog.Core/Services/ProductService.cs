@@ -16,7 +16,10 @@ public sealed class ProductService : IProductService
     private readonly ITaxCalculatorResolver _taxResolver;
     private readonly ILogger<ProductService> _logger;
 
-    public ProductService(CaraDogDbContext dbContext, ITaxCalculatorResolver taxResolver, ILogger<ProductService> logger)
+    public ProductService(
+        CaraDogDbContext dbContext,
+        ITaxCalculatorResolver taxResolver,
+        ILogger<ProductService> logger)
     {
         _dbContext = dbContext;
         _taxResolver = taxResolver;

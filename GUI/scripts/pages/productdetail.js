@@ -23,12 +23,34 @@
             this.renderError("Produkt nicht gefunden.");
             return;
           }
-          this.renderProduct(product);
+          return this.loadAvailableImages(product.sku)
+            .then((imagePaths) => {
+              this.renderProduct(product, imagePaths);
+            });
         })
         .catch((error) => this.renderError(error.message));
     }
 
-    renderProduct(product) {
+    loadAvailableImages(sku) {
+      const maxImages = 6;
+      const normalizedSku = (sku || "product").trim().toUpperCase();
+      const candidates = [];
+      for (let i = 1; i <= maxImages; i += 1) {
+        candidates.push(`assets/products/${normalizedSku}-${i}.jpg`);
+      }
+
+      const checks = candidates.map((path) => new Promise((resolve) => {
+        const probe = new Image();
+        probe.onload = () => resolve(path);
+        probe.onerror = () => resolve(null);
+        probe.src = path;
+      }));
+
+      return Promise.all(checks)
+        .then((results) => results.filter((path) => Boolean(path)));
+    }
+
+    renderProduct(product, imagePaths) {
       this.container.innerHTML = "";
 
       const layout = document.createElement("div");
@@ -37,7 +59,7 @@
       const media = document.createElement("div");
       media.className = "product-detail-media";
 
-      this.imagePaths = this.buildImagePaths(product.sku, 6);
+      this.imagePaths = Array.isArray(imagePaths) ? imagePaths : [];
 
       const mainImage = document.createElement("img");
       mainImage.className = "product-main-image is-ready";
@@ -57,7 +79,6 @@
       const thumbnails = document.createElement("div");
       thumbnails.className = "product-thumbnails";
 
-      const thumbButtons = [];
       let activeThumb = null;
 
       const selectImage = (path, button) => {
@@ -71,15 +92,6 @@
         setMainImage(path);
       };
 
-      const selectFirstAvailable = () => {
-        const first = thumbButtons.find((button) => button.isConnected);
-        if (first) {
-          selectImage(first.dataset.imagePath, first);
-          return;
-        }
-        setMainImage("assets/Logo/CaraDog_Logo.png");
-      };
-
       this.imagePaths.forEach((path, index) => {
         const button = document.createElement("button");
         button.type = "button";
@@ -91,23 +103,23 @@
         thumbImage.src = path;
         thumbImage.alt = product.name;
         thumbImage.loading = "lazy";
-        thumbImage.addEventListener("error", () => {
-          button.remove();
-          if (activeThumb === button) {
-            selectFirstAvailable();
-          }
-        });
-
         button.addEventListener("click", () => {
           selectImage(path, button);
         });
 
         button.appendChild(thumbImage);
         thumbnails.appendChild(button);
-        thumbButtons.push(button);
+        if (index === 0) {
+          activeThumb = button;
+          button.classList.add("is-active");
+        }
       });
 
-      selectFirstAvailable();
+      if (this.imagePaths.length > 0) {
+        setMainImage(this.imagePaths[0]);
+      } else {
+        setMainImage("assets/Logo/CaraDog_Logo.png");
+      }
 
       media.append(mainImage, thumbnails);
 
@@ -162,15 +174,6 @@
       if (tagSection) {
         this.container.append(tagSection);
       }
-    }
-
-    buildImagePaths(sku, count) {
-      const normalizedSku = (sku || "product").trim().toUpperCase();
-      const paths = [];
-      for (let i = 1; i <= count; i += 1) {
-        paths.push(`assets/products/${normalizedSku}-${i}.jpg`);
-      }
-      return paths;
     }
 
     buildDescriptionList(description) {
