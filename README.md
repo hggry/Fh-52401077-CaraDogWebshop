@@ -12,7 +12,6 @@ Ziel ist es eine nachhaltige und erweiterbare E-Commerce-Website mit **HTML, CSS
 ### Allgemein
 - Mehrseitige Website mit Navigation
 - Responsives Layout
-- Hash-Routing ohne Framework
 - Zentrale Styles über CSS-Variablen
 - Produktdatenverwaltung via SQL DB
 
@@ -37,27 +36,34 @@ Ziel ist es eine nachhaltige und erweiterbare E-Commerce-Website mit **HTML, CSS
 
 ---
 
-## Tech Stack
-- Frontend:  
-  - HTML5  
-  - CSS3  
-  - Vanilla JavaScript
+# Installation / Lokale Entwicklung
+Voraussetzungen
+- Docker
+- .NET 8.0
+- Entity Framework CLI
 
-- Backend:
-  - C# ASP.NET Core API
-  - SQL
-
-## Installation / Lokale Entwicklung
-Zur ausführung wird ein lokaler Server benötigt.
-
-### Option 1 – Python
-1. Webserver starten mit python befehl
+(Achten auf korrekte Pfadverweise)
+1. **Falls nicht vorhanden Entity Framwork CLI installieren**
 ```bash
-python -m http.server 5500
+dotnet new tool-manifest
+dotnet tool install dotnet-ef --version 8.0.22
+dotnet tool restore
 ```
-2. Dann öffnen: http://localhost:5500
 
-### Option 2 – VS Code
-1. „Live Server“ Extension installieren
-2. index.html mit Live Server starten
+2. **Docker Container starten**
+```bash
+docker compose up --build -d
+```
 
+3. **Db mit Tabellen befüllen**
+```bash
+dotnet ef database update -p .\Backend\CaraDog.Db\CaraDog.Db.csproj -s .\Backend\CaraDog.Api\CaraDog.Api.csproj
+```
+
+4. **Db mit initialen Daten befüllen**
+```bash
+dotnet run --project .\Backend\CaraDog.CLI -- seed --file .\Backend\CaraDog.CLI\seed-example.json --upsert
+```
+
+5. **Webshop aufrufen**
+-> http://localhost:8081
