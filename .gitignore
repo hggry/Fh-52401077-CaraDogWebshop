@@ -54,3 +54,4 @@ TestResult.xml
 nunit-*.xml
 /Backend/.vs
 /docker/env.dev
+/Backend/.config

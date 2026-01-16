@@ -1,7 +1,6 @@
 using CaraDog.Db.Entities;
 using DbOrderStatus = CaraDog.Db.Enums.OrderStatus;
 using DbPaymentProvider = CaraDog.Db.Enums.PaymentProvider;
-using CaraDog.DTO.Addresses;
 using CaraDog.DTO.Categories;
 using CaraDog.DTO.Customers;
 using DtoOrderStatus = CaraDog.DTO.Enums.OrderStatus;
@@ -17,6 +16,11 @@ public static class EntityDtoMapper
     public static ProductDto ToDto(this Product product, decimal taxRate)
     {
         var gross = Math.Round(product.NetPrice * (1 + taxRate), 2, MidpointRounding.AwayFromZero);
+        var tags = product.ProductTags
+            .Select(pt => pt.Tag.Name)
+            .OrderBy(name => name)
+            .ToList();
+
         return new ProductDto(
             product.Id,
             product.Name,
@@ -27,7 +31,8 @@ public static class EntityDtoMapper
             taxRate,
             product.IsSoldOut,
             product.CategoryId,
-            product.Category.Name);
+            product.Category.Name,
+            tags);
     }
 
     public static CategoryDto ToDto(this Category category)
@@ -43,18 +48,13 @@ public static class EntityDtoMapper
             customer.LastName,
             customer.Email,
             customer.Phone,
+            customer.Street,
+            customer.HouseNumber,
+            customer.AddressLine2,
+            customer.City.Name,
+            customer.City.PostalCode,
+            customer.City.CountryCode,
             customer.CreatedAt);
-    }
-
-    public static AddressDto ToDto(this Address address)
-    {
-        return new AddressDto(
-            address.Id,
-            address.Street,
-            address.City,
-            address.PostalCode,
-            address.CountryCode,
-            address.State);
     }
 
     public static InventoryDto ToDto(this Inventory inventory)
@@ -71,7 +71,6 @@ public static class EntityDtoMapper
         return new OrderDto(
             order.Id,
             order.Customer.ToDto(),
-            order.ShippingAddress.ToDto(),
             order.Items.Select(ToDto).ToList(),
             MapStatus(order.Status),
             MapProvider(order.PaymentProvider),

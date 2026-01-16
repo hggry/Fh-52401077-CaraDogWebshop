@@ -9,9 +9,6 @@ public sealed class Order
     public Guid CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
-    public Guid ShippingAddressId { get; set; }
-    public Address ShippingAddress { get; set; } = null!;
-
     public DateTime CreatedAt { get; set; }
 
     public OrderStatus Status { get; set; }

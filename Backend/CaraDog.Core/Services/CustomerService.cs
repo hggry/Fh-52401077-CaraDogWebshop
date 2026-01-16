@@ -23,6 +23,7 @@ public sealed class CustomerService : ICustomerService
     public async Task<IReadOnlyList<CustomerDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var customers = await _dbContext.Customers
+            .Include(c => c.City)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -32,6 +33,7 @@ public sealed class CustomerService : ICustomerService
     public async Task<CustomerDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var customer = await _dbContext.Customers
+            .Include(c => c.City)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
@@ -47,6 +49,8 @@ public sealed class CustomerService : ICustomerService
     {
         ValidateRequest(request);
 
+        var city = await GetOrCreateCityAsync(request, cancellationToken);
+
         var customer = new Customer
         {
             Id = Guid.NewGuid(),
@@ -54,6 +58,11 @@ public sealed class CustomerService : ICustomerService
             LastName = request.LastName.Trim(),
             Email = request.Email.Trim(),
             Phone = request.Phone?.Trim(),
+            Street = request.Street.Trim(),
+            HouseNumber = request.HouseNumber.Trim(),
+            AddressLine2 = request.AddressLine2?.Trim(),
+            CityId = city.Id,
+            City = city,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -70,6 +79,7 @@ public sealed class CustomerService : ICustomerService
         ValidateRequest(request);
 
         var customer = await _dbContext.Customers
+            .Include(c => c.City)
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
         if (customer is null)
@@ -81,6 +91,13 @@ public sealed class CustomerService : ICustomerService
         customer.LastName = request.LastName.Trim();
         customer.Email = request.Email.Trim();
         customer.Phone = request.Phone?.Trim();
+        customer.Street = request.Street.Trim();
+        customer.HouseNumber = request.HouseNumber.Trim();
+        customer.AddressLine2 = request.AddressLine2?.Trim();
+
+        var city = await GetOrCreateCityAsync(request, cancellationToken);
+        customer.CityId = city.Id;
+        customer.City = city;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -121,6 +138,31 @@ public sealed class CustomerService : ICustomerService
         {
             throw new ValidationException("Customer email is required.");
         }
+
+        if (string.IsNullOrWhiteSpace(request.Street))
+        {
+            throw new ValidationException("Customer street is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.HouseNumber))
+        {
+            throw new ValidationException("Customer house number is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.CityName))
+        {
+            throw new ValidationException("Customer city is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.PostalCode))
+        {
+            throw new ValidationException("Customer postal code is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.CountryCode))
+        {
+            throw new ValidationException("Customer country code is required.");
+        }
     }
 
     private static void ValidateRequest(CustomerUpdateRequest request)
@@ -139,5 +181,86 @@ public sealed class CustomerService : ICustomerService
         {
             throw new ValidationException("Customer email is required.");
         }
+
+        if (string.IsNullOrWhiteSpace(request.Street))
+        {
+            throw new ValidationException("Customer street is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.HouseNumber))
+        {
+            throw new ValidationException("Customer house number is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.CityName))
+        {
+            throw new ValidationException("Customer city is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.PostalCode))
+        {
+            throw new ValidationException("Customer postal code is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.CountryCode))
+        {
+            throw new ValidationException("Customer country code is required.");
+        }
+    }
+
+    private async Task<City> GetOrCreateCityAsync(CustomerCreateRequest request, CancellationToken cancellationToken)
+    {
+        var name = request.CityName.Trim();
+        var postalCode = request.PostalCode.Trim();
+        var countryCode = request.CountryCode.Trim().ToUpperInvariant();
+
+        var city = await _dbContext.Cities
+            .FirstOrDefaultAsync(
+                c => c.Name == name && c.PostalCode == postalCode && c.CountryCode == countryCode,
+                cancellationToken);
+
+        if (city is not null)
+        {
+            return city;
+        }
+
+        city = new City
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            PostalCode = postalCode,
+            CountryCode = countryCode
+        };
+
+        _dbContext.Cities.Add(city);
+        return city;
+    }
+
+    private async Task<City> GetOrCreateCityAsync(CustomerUpdateRequest request, CancellationToken cancellationToken)
+    {
+        var name = request.CityName.Trim();
+        var postalCode = request.PostalCode.Trim();
+        var countryCode = request.CountryCode.Trim().ToUpperInvariant();
+
+        var city = await _dbContext.Cities
+            .FirstOrDefaultAsync(
+                c => c.Name == name && c.PostalCode == postalCode && c.CountryCode == countryCode,
+                cancellationToken);
+
+        if (city is not null)
+        {
+            return city;
+        }
+
+        city = new City
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            PostalCode = postalCode,
+            CountryCode = countryCode
+        };
+
+        _dbContext.Cities.Add(city);
+        return city;
     }
 }

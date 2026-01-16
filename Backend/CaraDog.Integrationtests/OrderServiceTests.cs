@@ -4,7 +4,7 @@ using CaraDog.Core.Exceptions;
 using CaraDog.Core.Services;
 using CaraDog.Core.Tax;
 using CaraDog.Db.Entities;
-using CaraDog.DTO.Addresses;
+using CaraDog.DTO.Carts;
 using CaraDog.DTO.Customers;
 using CaraDog.DTO.Enums;
 using CaraDog.DTO.Inventory;
@@ -52,9 +52,18 @@ public sealed class OrderServiceTests
             NullLogger<OrderService>.Instance);
 
         var request = new OrderCreateRequest(
-            new CustomerCreateRequest("Ada", "Lovelace", "ada@caradog.local", "123"),
-            new AddressCreateRequest("Street 1", "Vienna", "1010", "AT", null),
-            new List<OrderItemCreateRequest> { new(product.Id, 2) },
+            new CustomerCreateRequest(
+                "Ada",
+                "Lovelace",
+                "ada@caradog.local",
+                "123",
+                "Street",
+                "1",
+                null,
+                "Vienna",
+                "1010",
+                "AT"),
+            new List<OrderItemCreateRequest> { new(product.Sku, 2) },
             PaymentProvider.Paypal);
 
         var order = await service.CreateAsync(request);
@@ -105,11 +114,62 @@ public sealed class OrderServiceTests
             NullLogger<OrderService>.Instance);
 
         var request = new OrderCreateRequest(
-            new CustomerCreateRequest("Ada", "Lovelace", "ada@caradog.local", null),
-            new AddressCreateRequest("Street 1", "Vienna", "1010", "AT", null),
-            new List<OrderItemCreateRequest> { new(product.Id, 2) },
+            new CustomerCreateRequest(
+                "Ada",
+                "Lovelace",
+                "ada@caradog.local",
+                null,
+                "Street",
+                "1",
+                null,
+                "Vienna",
+                "1010",
+                "AT"),
+            new List<OrderItemCreateRequest> { new(product.Sku, 2) },
             PaymentProvider.Paypal);
 
         await Assert.ThrowsExceptionAsync<ValidationException>(() => service.CreateAsync(request));
+    }
+
+    [TestMethod]
+    public async Task GetCartInfo_ComputesTotals()
+    {
+        var dbContext = DbContextFactory.Create(nameof(GetCartInfo_ComputesTotals));
+
+        var category = new Category { Id = Guid.NewGuid(), Name = "Leinen" };
+        var product = new Product
+        {
+            Id = Guid.NewGuid(),
+            Name = "Tauleine",
+            Sku = "LEINE-01",
+            NetPrice = 12.5m,
+            CategoryId = category.Id,
+            Category = category,
+            IsSoldOut = false
+        };
+        var inventory = new Inventory { Id = Guid.NewGuid(), ProductId = product.Id, Product = product, Quantity = 5 };
+
+        dbContext.Categories.Add(category);
+        dbContext.Products.Add(product);
+        dbContext.Inventories.Add(inventory);
+        await dbContext.SaveChangesAsync();
+
+        ITaxCalculator[] calculators = { new TaxCalculatorAT(), new TaxCalculatorDE() };
+        var taxResolver = new TaxCalculatorResolver(calculators);
+        IEmailService emailService = new Core.Email.LoggingEmailService(NullLogger<Core.Email.LoggingEmailService>.Instance);
+        var service = new OrderService(
+            dbContext,
+            taxResolver,
+            emailService,
+            NullLogger<OrderService>.Instance);
+
+        var request = new CartInfoRequest(new List<CartItemRequest> { new(product.Sku, 2) });
+
+        var cartInfo = await service.GetCartInfoAsync(request);
+
+        Assert.AreEqual(25m, cartInfo.SubtotalNet);
+        Assert.AreEqual(5m, cartInfo.TaxAmount);
+        Assert.AreEqual(7.99m, cartInfo.ShippingCost);
+        Assert.AreEqual(37.99m, cartInfo.TotalGross);
     }
 }

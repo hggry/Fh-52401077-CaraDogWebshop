@@ -28,6 +28,8 @@ public sealed class ProductService : IProductService
         var taxRate = GetCurrentTaxRate();
         var products = await _dbContext.Products
             .Include(p => p.Category)
+            .Include(p => p.ProductTags)
+            .ThenInclude(pt => pt.Tag)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -39,6 +41,8 @@ public sealed class ProductService : IProductService
         var taxRate = GetCurrentTaxRate();
         var product = await _dbContext.Products
             .Include(p => p.Category)
+            .Include(p => p.ProductTags)
+            .ThenInclude(pt => pt.Tag)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 
@@ -48,6 +52,66 @@ public sealed class ProductService : IProductService
         }
 
         return product.ToDto(taxRate);
+    }
+
+    public async Task<IReadOnlyList<ProductDto>> GetBySkuAsync(IReadOnlyList<string> skus, CancellationToken cancellationToken = default)
+    {
+        if (skus is null || skus.Count == 0)
+        {
+            throw new ValidationException("At least one SKU is required.");
+        }
+
+        var normalized = skus
+            .Where(sku => !string.IsNullOrWhiteSpace(sku))
+            .Select(sku => sku.Trim().ToUpperInvariant())
+            .Distinct()
+            .ToList();
+
+        if (normalized.Count == 0)
+        {
+            throw new ValidationException("At least one SKU is required.");
+        }
+
+        var taxRate = GetCurrentTaxRate();
+        var products = await _dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.ProductTags)
+            .ThenInclude(pt => pt.Tag)
+            .AsNoTracking()
+            .Where(p => normalized.Contains(p.Sku.ToUpper()))
+            .ToListAsync(cancellationToken);
+
+        return products.Select(product => product.ToDto(taxRate)).ToList();
+    }
+
+    public async Task<IReadOnlyList<ProductDto>> GetByCategoryAsync(IReadOnlyList<string> categories, CancellationToken cancellationToken = default)
+    {
+        if (categories is null || categories.Count == 0)
+        {
+            throw new ValidationException("At least one category is required.");
+        }
+
+        var normalized = categories
+            .Where(category => !string.IsNullOrWhiteSpace(category))
+            .Select(category => category.Trim().ToUpperInvariant())
+            .Distinct()
+            .ToList();
+
+        if (normalized.Count == 0)
+        {
+            throw new ValidationException("At least one category is required.");
+        }
+
+        var taxRate = GetCurrentTaxRate();
+        var products = await _dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.ProductTags)
+            .ThenInclude(pt => pt.Tag)
+            .AsNoTracking()
+            .Where(p => normalized.Contains(p.Category.Name.ToUpper()))
+            .ToListAsync(cancellationToken);
+
+        return products.Select(product => product.ToDto(taxRate)).ToList();
     }
 
     public async Task<ProductDto> CreateAsync(ProductCreateRequest request, CancellationToken cancellationToken = default)

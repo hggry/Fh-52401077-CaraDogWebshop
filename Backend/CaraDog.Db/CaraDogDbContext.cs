@@ -13,8 +13,10 @@ public sealed class CaraDogDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<ProductTag> ProductTags => Set<ProductTag>();
     public DbSet<Customer> Customers => Set<Customer>();
-    public DbSet<Address> Addresses => Set<Address>();
+    public DbSet<City> Cities => Set<City>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
@@ -40,9 +42,44 @@ public sealed class CaraDogDbContext : DbContext
             entity.HasIndex(c => c.Name).IsUnique();
         });
 
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasIndex(t => t.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<ProductTag>(entity =>
+        {
+            entity.HasKey(pt => new { pt.ProductId, pt.TagId });
+
+            entity.HasOne(pt => pt.Product)
+                .WithMany(p => p.ProductTags)
+                .HasForeignKey(pt => pt.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(pt => pt.Tag)
+                .WithMany(t => t.ProductTags)
+                .HasForeignKey(pt => pt.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.HasIndex(c => new { c.Name, c.PostalCode, c.CountryCode }).IsUnique();
+        });
+
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasOne(c => c.City)
+                .WithMany(c => c.Customers)
+                .HasForeignKey(c => c.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
         modelBuilder.Entity<Inventory>(entity =>
         {
-            entity.Property(i => i.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(i => i.UpdatedAt)
+                .HasColumnType("datetime(6)")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -55,11 +92,6 @@ public sealed class CaraDogDbContext : DbContext
             entity.HasOne(o => o.Customer)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(o => o.ShippingAddress)
-                .WithMany()
-                .HasForeignKey(o => o.ShippingAddressId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 

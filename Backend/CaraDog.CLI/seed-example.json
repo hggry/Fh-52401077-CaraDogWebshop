@@ -1,40 +1,112 @@
 {
   "categories": [
     {
-      "name": "Snacks",
-      "description": "Belohnungen und Kauartikel"
+      "name": "Spielzeug",
+      "description": "Handgemachtes Kau- und Zerrspielzeug"
     },
     {
-      "name": "Spielzeug",
-      "description": "Robuste Toys fuer Hunde"
+      "name": "Leine",
+      "description": "Handgeflochtene Tauleinen"
+    },
+    {
+      "name": "Halsband",
+      "description": "Leder- und Paracordhalsband"
+    }
+  ],
+  "tags": [
+    {
+      "name": "MAT-Biothane"
+    },
+    {
+      "name": "MAT-Nubukleder"
+    },
+    {
+      "name": "MAT-Fettleder"
+    },
+    {
+      "name": "TOY-Monkeydot"
     }
   ],
   "products": [
     {
-      "name": "Lammstreifen 100g",
-      "description": "Naturbelassene Lammstreifen",
-      "sku": "SNACK-LAMM-100",
-      "netPrice": 4.99,
-      "isSoldOut": false,
-      "categoryName": "Snacks"
-    },
-    {
-      "name": "Tau-Spielball",
-      "description": "Kombi aus Tau und Ball",
-      "sku": "TOY-ROPE-001",
-      "netPrice": 9.5,
+      "name": "Monkeydot Affenfaust Tartan",
+      "description": "Kau- und Zerrspielzeug, Tartan, ca. 30 cm",
+      "sku": "TOY-MONKEYDOT-TARTAN",
+      "netPrice": 14.9,
       "isSoldOut": false,
       "categoryName": "Spielzeug"
+    },
+    {
+      "name": "Monkeydot Affenfaust Purple",
+      "description": "Kau- und Zerrspielzeug, Purple, ca. 30 cm",
+      "sku": "TOY-MONKEYDOT-PURPLE",
+      "netPrice": 14.9,
+      "isSoldOut": false,
+      "categoryName": "Spielzeug"
+    },
+    {
+      "name": "Monkeydot Affenfaust Avocado",
+      "description": "Kau- und Zerrspielzeug, Avocado, ca. 30 cm",
+      "sku": "TOY-MONKEYDOT-AVOCADO",
+      "netPrice": 14.9,
+      "isSoldOut": false,
+      "categoryName": "Spielzeug"
+    },
+    {
+      "name": "Tauleine Mermaid Dream",
+      "description": "2 Meter, 3-fach verstellbar, neochrome",
+      "sku": "LEINE-MERMAID-NEO",
+      "netPrice": 35.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Lederhalsband London",
+      "description": "Fettlederhalsband, braun, 33-41 cm",
+      "sku": "HALSBAND-LONDON",
+      "netPrice": 32.9,
+      "isSoldOut": false,
+      "categoryName": "Halsband"
+    }
+  ],
+  "productTags": [
+    {
+      "productSku": "TOY-MONKEYDOT-TARTAN",
+      "tagName": "TOY-Monkeydot"
+    },
+    {
+      "productSku": "TOY-MONKEYDOT-PURPLE",
+      "tagName": "TOY-Monkeydot"
+    },
+    {
+      "productSku": "TOY-MONKEYDOT-AVOCADO",
+      "tagName": "TOY-Monkeydot"
+    },
+    {
+      "productSku": "HALSBAND-LONDON",
+      "tagName": "MAT-Fettleder"
     }
   ],
   "inventories": [
     {
-      "productSku": "SNACK-LAMM-100",
-      "quantity": 120
+      "productSku": "TOY-MONKEYDOT-TARTAN",
+      "quantity": 12
     },
     {
-      "productSku": "TOY-ROPE-001",
-      "quantity": 40
+      "productSku": "TOY-MONKEYDOT-PURPLE",
+      "quantity": 12
+    },
+    {
+      "productSku": "TOY-MONKEYDOT-AVOCADO",
+      "quantity": 12
+    },
+    {
+      "productSku": "LEINE-MERMAID-NEO",
+      "quantity": 8
+    },
+    {
+      "productSku": "HALSBAND-LONDON-15",
+      "quantity": 6
     }
   ]
 }

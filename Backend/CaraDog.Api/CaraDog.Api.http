@@ -5,7 +5,55 @@ Accept: application/json
 
 ###
 
-GET {{CaraDog.Api_HostAddress}}/api/categories
+GET {{CaraDog.Api_HostAddress}}/api/products/by-sku?skus=TOY-MONKEYDOT-TARTAN,LEINE-MERMAID-NEO
 Accept: application/json
 
 ###
+
+GET {{CaraDog.Api_HostAddress}}/api/products/by-category?categories=Spielzeug
+Accept: application/json
+
+###
+
+POST {{CaraDog.Api_HostAddress}}/api/cart/info
+Content-Type: application/json
+
+{
+  "items": [
+    { "sku": "TOY-MONKEYDOT-TARTAN", "quantity": 1 }
+  ]
+}
+
+###
+
+POST {{CaraDog.Api_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customer": {
+    "firstName": "Ada",
+    "lastName": "Lovelace",
+    "email": "ada@caradog.local",
+    "phone": "123",
+    "street": "Street",
+    "houseNumber": "1",
+    "addressLine2": null,
+    "cityName": "Vienna",
+    "postalCode": "1010",
+    "countryCode": "AT"
+  },
+  "items": [
+    { "sku": "TOY-MONKEYDOT-TARTAN", "quantity": 1 }
+  ],
+  "paymentProvider": "Paypal"
+}
+
+###
+
+PATCH {{CaraDog.Api_HostAddress}}/api/orders/{{orderId}}/status
+Accept: application/json
+Content-Type: application/json
+
+{
+  "status": "Paid"
+}

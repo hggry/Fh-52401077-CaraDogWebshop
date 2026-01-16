@@ -96,6 +96,43 @@ if (IsSeedCommand(args))
     var categoriesReloaded = await db.Categories.ToListAsync();
     var categoryLookup = categoriesReloaded.ToDictionary(c => c.Name, StringComparer.OrdinalIgnoreCase);
 
+    var existingTags = await db.Tags.ToListAsync();
+    var tagsByName = existingTags
+        .ToDictionary(t => t.Name, StringComparer.OrdinalIgnoreCase);
+
+    var tagCreates = 0;
+    var tagUpdates = 0;
+    var tagSeeds = seedData.Tags ?? new List<TagSeed>();
+    foreach (var tag in tagSeeds)
+    {
+        if (tagsByName.TryGetValue(tag.Name, out var existing))
+        {
+            if (upsert)
+            {
+                existing.Name = tag.Name;
+                tagUpdates++;
+            }
+            continue;
+        }
+
+        var newTag = new Tag
+        {
+            Id = Guid.NewGuid(),
+            Name = tag.Name
+        };
+        db.Tags.Add(newTag);
+        tagsByName[newTag.Name] = newTag;
+        tagCreates++;
+    }
+
+    if (tagCreates > 0 || tagUpdates > 0)
+    {
+        await db.SaveChangesAsync();
+    }
+
+    var tagsReloaded = await db.Tags.ToListAsync();
+    var tagLookup = tagsReloaded.ToDictionary(t => t.Name, StringComparer.OrdinalIgnoreCase);
+
     var existingProducts = await db.Products.ToListAsync();
     var productsBySku = existingProducts
         .ToDictionary(p => p.Sku, StringComparer.OrdinalIgnoreCase);
@@ -146,6 +183,47 @@ if (IsSeedCommand(args))
         await db.SaveChangesAsync();
     }
 
+    var existingProductTags = await db.ProductTags.ToListAsync();
+    var productTagKeys = new HashSet<(Guid ProductId, Guid TagId)>(
+        existingProductTags.Select(pt => (pt.ProductId, pt.TagId)));
+
+    var productTagCreates = 0;
+    var productTagSeeds = seedData.ProductTags ?? new List<ProductTagSeed>();
+    foreach (var productTag in productTagSeeds)
+    {
+        if (!productsBySku.TryGetValue(productTag.ProductSku, out var product))
+        {
+            Console.WriteLine($"Skipping tag for unknown SKU: {productTag.ProductSku}");
+            continue;
+        }
+
+        if (!tagLookup.TryGetValue(productTag.TagName, out var tag))
+        {
+            Console.WriteLine($"Skipping unknown tag: {productTag.TagName}");
+            continue;
+        }
+
+        var key = (product.Id, tag.Id);
+        if (productTagKeys.Contains(key))
+        {
+            continue;
+        }
+
+        var newProductTag = new ProductTag
+        {
+            ProductId = product.Id,
+            TagId = tag.Id
+        };
+        db.ProductTags.Add(newProductTag);
+        productTagKeys.Add(key);
+        productTagCreates++;
+    }
+
+    if (productTagCreates > 0)
+    {
+        await db.SaveChangesAsync();
+    }
+
     var productsReloaded = await db.Products.ToListAsync();
     var productLookup = productsReloaded.ToDictionary(p => p.Sku, StringComparer.OrdinalIgnoreCase);
     var inventoriesByProductId = await db.Inventories.ToDictionaryAsync(i => i.ProductId);
@@ -191,7 +269,9 @@ if (IsSeedCommand(args))
 
     Console.WriteLine("Seed completed.");
     Console.WriteLine($"Categories: +{categoryCreates}, ~{categoryUpdates}");
+    Console.WriteLine($"Tags:       +{tagCreates}, ~{tagUpdates}");
     Console.WriteLine($"Products:   +{productCreates}, ~{productUpdates}");
+    Console.WriteLine($"Prod tags:  +{productTagCreates}");
     Console.WriteLine($"Inventory:  +{inventoryCreates}, ~{inventoryUpdates}");
     return;
 }
@@ -241,7 +321,9 @@ static void PrintUsage()
 sealed class SeedData
 {
     public List<CategorySeed> Categories { get; init; } = new();
+    public List<TagSeed> Tags { get; init; } = new();
     public List<ProductSeed> Products { get; init; } = new();
+    public List<ProductTagSeed> ProductTags { get; init; } = new();
     public List<InventorySeed> Inventories { get; init; } = new();
 }
 
@@ -259,6 +341,17 @@ sealed class ProductSeed
     public decimal NetPrice { get; init; }
     public bool IsSoldOut { get; init; }
     public string CategoryName { get; init; } = string.Empty;
+}
+
+sealed class TagSeed
+{
+    public string Name { get; init; } = string.Empty;
+}
+
+sealed class ProductTagSeed
+{
+    public string ProductSku { get; init; } = string.Empty;
+    public string TagName { get; init; } = string.Empty;
 }
 
 sealed class InventorySeed

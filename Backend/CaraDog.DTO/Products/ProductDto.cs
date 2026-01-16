@@ -10,5 +10,6 @@ public sealed record ProductDto(
     decimal TaxRate,
     bool IsSoldOut,
     Guid CategoryId,
-    string CategoryName
+    string CategoryName,
+    IReadOnlyList<string> Tags
 );

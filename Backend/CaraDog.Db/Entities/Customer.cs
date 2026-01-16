@@ -18,6 +18,18 @@ public sealed class Customer
     [MaxLength(40)]
     public string? Phone { get; set; }
 
+    [MaxLength(120)]
+    public string Street { get; set; } = string.Empty;
+
+    [MaxLength(16)]
+    public string HouseNumber { get; set; } = string.Empty;
+
+    [MaxLength(120)]
+    public string? AddressLine2 { get; set; }
+
+    public Guid CityId { get; set; }
+    public City City { get; set; } = null!;
+
     public DateTime CreatedAt { get; set; }
 
     public ICollection<Order> Orders { get; set; } = new List<Order>();

@@ -25,4 +25,6 @@ public sealed class Product
     public Inventory? Inventory { get; set; }
 
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+    public ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
 }

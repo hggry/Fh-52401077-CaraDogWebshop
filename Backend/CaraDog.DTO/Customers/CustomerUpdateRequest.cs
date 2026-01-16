@@ -4,5 +4,11 @@ public sealed record CustomerUpdateRequest(
     string FirstName,
     string LastName,
     string Email,
-    string? Phone
+    string? Phone,
+    string Street,
+    string HouseNumber,
+    string? AddressLine2,
+    string CityName,
+    string PostalCode,
+    string CountryCode
 );

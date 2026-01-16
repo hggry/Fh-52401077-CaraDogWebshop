@@ -6,7 +6,9 @@ using CaraDog.Core.Mappers;
 using CaraDog.Db;
 using CaraDog.Db.Entities;
 using DbOrderStatus = CaraDog.Db.Enums.OrderStatus;
+using CaraDog.DTO.Customers;
 using CaraDog.DTO.Enums;
+using CaraDog.DTO.Carts;
 using CaraDog.DTO.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -39,7 +41,7 @@ public sealed class OrderService : IOrderService
     {
         var orders = await _dbContext.Orders
             .Include(o => o.Customer)
-            .Include(o => o.ShippingAddress)
+            .ThenInclude(c => c.City)
             .Include(o => o.Items)
             .ThenInclude(i => i.Product)
             .AsNoTracking()
@@ -52,7 +54,7 @@ public sealed class OrderService : IOrderService
     {
         var order = await _dbContext.Orders
             .Include(o => o.Customer)
-            .Include(o => o.ShippingAddress)
+            .ThenInclude(c => c.City)
             .Include(o => o.Items)
             .ThenInclude(i => i.Product)
             .AsNoTracking()
@@ -75,6 +77,7 @@ public sealed class OrderService : IOrderService
             throw new ValidationException("Order must contain at least one item.");
         }
 
+        var city = await GetOrCreateCityAsync(request.Customer, cancellationToken);
         var customer = new Customer
         {
             Id = Guid.NewGuid(),
@@ -82,26 +85,26 @@ public sealed class OrderService : IOrderService
             LastName = request.Customer.LastName.Trim(),
             Email = request.Customer.Email.Trim(),
             Phone = request.Customer.Phone?.Trim(),
+            Street = request.Customer.Street.Trim(),
+            HouseNumber = request.Customer.HouseNumber.Trim(),
+            AddressLine2 = request.Customer.AddressLine2?.Trim(),
+            CityId = city.Id,
+            City = city,
             CreatedAt = DateTime.UtcNow
         };
 
-        var address = new Address
-        {
-            Id = Guid.NewGuid(),
-            Street = request.ShippingAddress.Street.Trim(),
-            City = request.ShippingAddress.City.Trim(),
-            PostalCode = request.ShippingAddress.PostalCode.Trim(),
-            CountryCode = request.ShippingAddress.CountryCode.Trim().ToUpperInvariant(),
-            State = request.ShippingAddress.State?.Trim()
-        };
-
-        var productIds = request.Items.Select(item => item.ProductId).Distinct().ToList();
+        var skus = request.Items
+            .Select(item => item.Sku.Trim())
+            .Where(sku => !string.IsNullOrWhiteSpace(sku))
+            .Select(sku => sku.ToUpperInvariant())
+            .Distinct()
+            .ToList();
         var products = await _dbContext.Products
             .Include(p => p.Inventory)
-            .Where(p => productIds.Contains(p.Id))
+            .Where(p => skus.Contains(p.Sku.ToUpper()))
             .ToListAsync(cancellationToken);
 
-        if (products.Count != productIds.Count)
+        if (products.Count != skus.Count)
         {
             throw new ValidationException("One or more products do not exist.");
         }
@@ -120,13 +123,13 @@ public sealed class OrderService : IOrderService
                 throw new ValidationException("Item quantity must be greater than zero.");
             }
 
-            var product = products.First(p => p.Id == item.ProductId);
+            var product = products.First(p => p.Sku.Equals(item.Sku, StringComparison.OrdinalIgnoreCase));
             var inventory = product.Inventory;
             var available = inventory?.Quantity ?? 0;
 
             if (available < item.Quantity)
             {
-                throw new ValidationException($"Insufficient stock for product {product.Id}.");
+                throw new ValidationException($"Insufficient stock for product {product.Sku}.");
             }
 
             var lineNet = Math.Round(product.NetPrice * item.Quantity, 2, MidpointRounding.AwayFromZero);
@@ -153,17 +156,19 @@ public sealed class OrderService : IOrderService
 
         var shippingCost = subtotalNet >= FreeShippingThreshold ? 0 : ShippingFlatRate;
         var totalGross = subtotalNet + taxAmount + shippingCost;
+        var paymentProvider = EntityDtoMapper.MapProviderDto(request.PaymentProvider);
+        var status = paymentProvider == CaraDog.Db.Enums.PaymentProvider.Paypal
+            ? DbOrderStatus.Paid
+            : DbOrderStatus.PaymentPending;
 
         var order = new Order
         {
             Id = Guid.NewGuid(),
             CustomerId = customer.Id,
             Customer = customer,
-            ShippingAddressId = address.Id,
-            ShippingAddress = address,
             CreatedAt = DateTime.UtcNow,
-            Status = DbOrderStatus.PaymentPending,
-            PaymentProvider = EntityDtoMapper.MapProviderDto(request.PaymentProvider),
+            Status = status,
+            PaymentProvider = paymentProvider,
             SubtotalNet = subtotalNet,
             TaxAmount = taxAmount,
             ShippingCost = shippingCost,
@@ -172,21 +177,23 @@ public sealed class OrderService : IOrderService
         };
 
         _dbContext.Customers.Add(customer);
-        _dbContext.Addresses.Add(address);
         _dbContext.Orders.Add(order);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var orderDto = order.ToDto();
-        try
+        if (status == DbOrderStatus.Paid)
         {
-            await _emailService.SendOrderConfirmationAsync(orderDto, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "HBH-ORD-004 Failed to send confirmation email for {OrderId}", order.Id);
+            try
+            {
+                await _emailService.SendOrderConfirmationAsync(orderDto, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "HBH-ORD-004 Failed to send confirmation email for {OrderId}", order.Id);
+            }
         }
 
-        _logger.LogInformation("HBH-ORD-001 Order created {OrderId}", order.Id);
+        _logger.LogInformation("HBH-ORD-001 Order created {OrderId} {Status}", order.Id, status);
 
         return orderDto;
     }
@@ -195,7 +202,7 @@ public sealed class OrderService : IOrderService
     {
         var order = await _dbContext.Orders
             .Include(o => o.Customer)
-            .Include(o => o.ShippingAddress)
+            .ThenInclude(c => c.City)
             .Include(o => o.Items)
             .ThenInclude(i => i.Product)
             .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
@@ -246,24 +253,123 @@ public sealed class OrderService : IOrderService
             throw new ValidationException("Customer email is required.");
         }
 
-        if (string.IsNullOrWhiteSpace(request.ShippingAddress.Street))
+        if (string.IsNullOrWhiteSpace(request.Customer.Street))
         {
             throw new ValidationException("Shipping street is required.");
         }
 
-        if (string.IsNullOrWhiteSpace(request.ShippingAddress.City))
+        if (string.IsNullOrWhiteSpace(request.Customer.HouseNumber))
+        {
+            throw new ValidationException("Shipping house number is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Customer.CityName))
         {
             throw new ValidationException("Shipping city is required.");
         }
 
-        if (string.IsNullOrWhiteSpace(request.ShippingAddress.PostalCode))
+        if (string.IsNullOrWhiteSpace(request.Customer.PostalCode))
         {
             throw new ValidationException("Shipping postal code is required.");
         }
 
-        if (string.IsNullOrWhiteSpace(request.ShippingAddress.CountryCode))
+        if (string.IsNullOrWhiteSpace(request.Customer.CountryCode))
         {
             throw new ValidationException("Shipping country code is required.");
         }
+    }
+
+    public async Task<CartInfoDto> GetCartInfoAsync(CartInfoRequest request, CancellationToken cancellationToken = default)
+    {
+        if (request.Items is null || request.Items.Count == 0)
+        {
+            throw new ValidationException("Cart must contain at least one item.");
+        }
+
+        var skus = request.Items
+            .Select(item => item.Sku.Trim())
+            .Where(sku => !string.IsNullOrWhiteSpace(sku))
+            .Select(sku => sku.ToUpperInvariant())
+            .Distinct()
+            .ToList();
+
+        var products = await _dbContext.Products
+            .Include(p => p.Inventory)
+            .Where(p => skus.Contains(p.Sku.ToUpper()))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        if (products.Count != skus.Count)
+        {
+            throw new ValidationException("One or more products do not exist.");
+        }
+
+        var taxCalculator = _taxResolver.Resolve("AT");
+        var lines = new List<CartLineDto>();
+        decimal subtotalNet = 0;
+        decimal taxAmount = 0;
+
+        foreach (var item in request.Items)
+        {
+            if (item.Quantity <= 0)
+            {
+                throw new ValidationException("Item quantity must be greater than zero.");
+            }
+
+            var product = products.First(p => p.Sku.Equals(item.Sku, StringComparison.OrdinalIgnoreCase));
+            var available = product.Inventory?.Quantity ?? 0;
+
+            if (available < item.Quantity)
+            {
+                throw new ValidationException($"Insufficient stock for product {product.Sku}.");
+            }
+
+            var lineNet = Math.Round(product.NetPrice * item.Quantity, 2, MidpointRounding.AwayFromZero);
+            var lineTax = taxCalculator.CalculateTax(lineNet);
+            subtotalNet += lineNet;
+            taxAmount += lineTax;
+
+            lines.Add(new CartLineDto(
+                product.Sku,
+                product.Name,
+                item.Quantity,
+                product.NetPrice,
+                lineNet,
+                lineTax,
+                lineNet + lineTax));
+        }
+
+        var shippingCost = subtotalNet >= FreeShippingThreshold ? 0 : ShippingFlatRate;
+        var totalGross = subtotalNet + taxAmount + shippingCost;
+
+        return new CartInfoDto(lines, subtotalNet, taxAmount, shippingCost, totalGross);
+    }
+
+    private async Task<City> GetOrCreateCityAsync(CustomerCreateRequest request, CancellationToken cancellationToken)
+    {
+        var name = request.CityName.Trim();
+        var postalCode = request.PostalCode.Trim();
+        var countryCode = request.CountryCode.Trim().ToUpperInvariant();
+
+        var city = await _dbContext.Cities
+            .FirstOrDefaultAsync(
+                c => c.Name == name && c.PostalCode == postalCode && c.CountryCode == countryCode,
+                cancellationToken);
+
+        if (city is not null)
+        {
+            return city;
+        }
+
+        city = new City
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            PostalCode = postalCode,
+            CountryCode = countryCode
+        };
+
+        _dbContext.Cities.Add(city);
+        return city;
     }
 }
