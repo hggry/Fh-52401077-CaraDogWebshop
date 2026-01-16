@@ -11,7 +11,7 @@
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-sm: 12px;
-  --transition: 200ms ease;
+  --transition: 300ms ease;
 }
 
 @font-face {
@@ -141,16 +141,12 @@ button {
   display: block;
 }
 
-.footer-brand {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
   align-items: start;
+  padding-left: 10vw;
 }
 
 .footer-column {
@@ -173,7 +169,7 @@ button {
 }
 
 .footer-logo img {
-  width: 72px;
+  width: 100px;
   height: auto;
 }
 
