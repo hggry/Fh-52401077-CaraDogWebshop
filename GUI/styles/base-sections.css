@@ -9,21 +9,30 @@
 }
 
 .hero-secondary-content,
-.brand-story {
+.basic-section,
+.tag-section {
   display: flex;
   justify-content: flex-start;
   gap: 28px;
   align-items: center;
 }
 
-.brand-story {
+.basic-section {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   margin: 0 10vw;
 }
 
-.brand-story-media {
+.tag-section{
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+
+.basic-section-media,
+.tag-section-media {
   max-width: 500px;
   margin: 20px;
   aspect-ratio: 1 / 1;
@@ -96,7 +105,7 @@
   margin-bottom: 18px;
 }
 
-.brand-story-text h2 {
+.basic-section-text h2 {
   margin-bottom: 12px;
 }
 
@@ -256,7 +265,8 @@
 
 @media (max-width: 900px) {
   .hero-secondary-content,
-  .brand-story,
+  .basic-section,
+  .tag-section,
   .product-teaser,
   .custom-made {
     padding: 16px 16px;
@@ -276,12 +286,14 @@
     font-size: 1.6rem;
   }
 
-  .brand-story{
+  .basic-section
+  .tag-section{
     margin-left: 18px;
     margin-right: 18px;
   }
 
-  .brand-story-media {
+  .basic-section-media,
+  .tag-section-media {
     width: 100%;
   }
 

@@ -71,7 +71,7 @@
 
         row.innerHTML = `
           <div class="cart-thumb">
-            <img src="assets/Set/DSC01626.jpg" alt="${product.name}" />
+            <img alt="${product.name}" loading="lazy" />
           </div>
           <div class="cart-item-meta">
             <h2 class="cart-item-title">${product.name}</h2>
@@ -87,6 +87,12 @@
             <button class="cart-remove" type="button" aria-label="Remove item">&times;</button>
           </div>
         `;
+
+        const image = row.querySelector(".cart-thumb img");
+        image.src = this.buildImagePath(product.sku);
+        image.addEventListener("error", () => {
+          image.src = "assets/Logo/CaraDog_Logo.png";
+        });
 
         const qtyDisplay = row.querySelector(".cart-qty span");
         const decrease = row.querySelector("[data-action='decrease']");
@@ -121,6 +127,11 @@
 
         this.itemsContainer.appendChild(row);
       });
+    }
+
+    buildImagePath(sku) {
+      const normalizedSku = (sku || "product").trim().toUpperCase();
+      return `assets/products/${normalizedSku}-1.jpg`;
     }
 
     refreshTotals() {

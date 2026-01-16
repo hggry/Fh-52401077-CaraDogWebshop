@@ -29,7 +29,7 @@
   ],
   "products": [
     {
-      "name": "Monkeydot Affenfaust Tartan",
+      "name": "Affenfaust Tartan",
       "description": "Kau- und Zerrspielzeug, Tartan, ca. 30 cm",
       "sku": "TOY-MONKEYDOT-TARTAN",
       "netPrice": 14.9,
@@ -37,7 +37,7 @@
       "categoryName": "Spielzeug"
     },
     {
-      "name": "Monkeydot Affenfaust Purple",
+      "name": "Affenfaust Purple",
       "description": "Kau- und Zerrspielzeug, Purple, ca. 30 cm",
       "sku": "TOY-MONKEYDOT-PURPLE",
       "netPrice": 14.9,
@@ -45,7 +45,7 @@
       "categoryName": "Spielzeug"
     },
     {
-      "name": "Monkeydot Affenfaust Avocado",
+      "name": "Affenfaust Avocado",
       "description": "Kau- und Zerrspielzeug, Avocado, ca. 30 cm",
       "sku": "TOY-MONKEYDOT-AVOCADO",
       "netPrice": 14.9,
@@ -54,9 +54,81 @@
     },
     {
       "name": "Tauleine Mermaid Dream",
-      "description": "2 Meter, 3-fach verstellbar, neochrome",
+      "description": "2 Meter, 3-fach verstellbar, neochrome, für Hunde bis zu 30kg geeignet",
       "sku": "LEINE-MERMAID-NEO",
       "netPrice": 35.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Royal",
+      "description": "1.5 Meter, 2-fach verstellbar, Beschläge vergoldet, für Hunde bis zu 16kg geeignet",
+      "sku": "LEINE-ROYAL",
+      "netPrice": 29.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Blue Cappucino",
+      "description": "1.2 Meter, 2-fach verstellbar, Beschläge rosé, für Hunde bis zu 20kg geeignet",
+      "sku": "LEINE-BLUE-CAPPUCINO",
+      "netPrice": 29.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Forest",
+      "description": "1.5 Meter, 2-fach verstellbar, Beschläge Edelstahl (silber), für Hunde bis zu 40kg geeignet",
+      "sku": "LEINE-FOREST",
+      "netPrice": 32.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Skylime",
+      "description": "1.5 Meter, 3-fach verstellbar, Beschläge Edelstahl (silber), für Hunde bis zu 40kg geeignet",
+      "sku": "LEINE-SKYLIME",
+      "netPrice": 32.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Candy Cane",
+      "description": "1.7 Meter, 2-fach verstellbar, Beschläge rosé, für Hunde bis zu 16 kg geeignet",
+      "sku": "LEINE-CANDY-CANE",
+      "netPrice": 32.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Black & White",
+      "description": "Kurzführleine mit Halteschlaufe, gedrehtes Baumwohlseil, Beschläge Edelstahl (silber), für Hunde bis zu 40kg geeignet",
+      "sku": "LEINE-BLACK-WHITE",
+      "netPrice": 26.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Summer Breeze",
+      "description": "2 Meter, 3-fach verstellbar, gedrehtes Baumwohlseil, für Hunde bis zu 16kg geeignet",
+      "sku": "LEINE-SUMMER-BREEZE",
+      "netPrice": 35.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Tauleine Icy Blue",
+      "description": "2 Meter, 3-fach verstellbar, gedrehtes Baumwohlseil, Beschläge rosé",
+      "sku": "LEINE-ICY-BLUE",
+      "netPrice": 35.9,
+      "isSoldOut": false,
+      "categoryName": "Leine"
+    },
+    {
+      "name": "Biothanleine Petrol",
+      "description": "1.5 Meter, 2-fach verstellbar, Beschläge Edelstahl (silber)",
+      "sku": "LEINE-PETROL",
+      "netPrice": 45.9,
       "isSoldOut": false,
       "categoryName": "Leine"
     },
@@ -73,6 +145,10 @@
     {
       "productSku": "TOY-MONKEYDOT-TARTAN",
       "tagName": "TOY-Monkeydot"
+    },
+    {
+      "productSku": "LEINE-PETROL",
+      "tagName": "MAT-Biothane"
     },
     {
       "productSku": "TOY-MONKEYDOT-PURPLE",
@@ -106,6 +182,44 @@
     },
     {
       "productSku": "HALSBAND-LONDON-15",
+      "quantity": 6
+    },
+
+
+    {
+      "productSku": "LEINE-ROYAL",
+      "quantity": 2
+    },
+    {
+      "productSku": "LEINE-BLUE-CAPPUCINO",
+      "quantity": 3
+    },
+    {
+      "productSku": "LEINE-FOREST",
+      "quantity": 5
+    },
+    {
+      "productSku": "LEINE-SKYLIME",
+      "quantity": 2
+    },
+    {
+      "productSku": "LEINE-CANDY-CANE",
+      "quantity": 4
+    },
+    {
+      "productSku": "LEINE-BLACK-WHITE",
+      "quantity": 1
+    },
+    {
+      "productSku": "LEINE-SUMMER-BREEZE",
+      "quantity": 3
+    },
+    {
+      "productSku": "LEINE-MERMAID-NEO",
+      "quantity": 2
+    },
+    {
+      "productSku": "LEINE-PETROL",
       "quantity": 6
     }
   ]

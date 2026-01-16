@@ -203,7 +203,9 @@
       }
 
       const section = document.createElement("section");
-      section.className = "product-tag-section";
+      section.style.display = "flex";
+      section.style.flexDirection = "column";
+      section.style.gap = "20px";
 
       const header = document.createElement("div");
       header.className = "section-header";
@@ -212,23 +214,21 @@
         <p>Mehr zu den Materialien und Details deines Produkts.</p>
       `;
 
-      const grid = document.createElement("div");
-      grid.className = "product-tag-grid";
-
       activeTags.forEach((tagKey) => {
         const info = tagCatalog[tagKey];
-        const card = document.createElement("article");
-        card.className = "product-tag-card";
+        const card = document.createElement("section");
+        card.className = "tag-section";
 
         const image = document.createElement("img");
         image.src = info.image;
         image.alt = info.title;
         image.loading = "lazy";
+        image.className = "tag-section-media";
 
         const text = document.createElement("div");
-        text.className = "product-tag-text";
+        text.className = "tag-section-text";
 
-        const title = document.createElement("h3");
+        const title = document.createElement("h2");
         title.textContent = info.title;
 
         const body = document.createElement("p");
@@ -236,10 +236,10 @@
 
         text.append(title, body);
         card.append(image, text);
-        grid.appendChild(card);
+        section.appendChild(card);
       });
 
-      section.append(header, grid);
+      section.prepend(header);
       return section;
     }
 
