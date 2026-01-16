@@ -210,7 +210,7 @@
       const header = document.createElement("div");
       header.className = "section-header";
       header.innerHTML = `
-        <h2>Material &amp; Besonderheiten</h2>
+        <h2>Besonderheiten</h2>
         <p>Mehr zu den Materialien und Details deines Produkts.</p>
       `;
 

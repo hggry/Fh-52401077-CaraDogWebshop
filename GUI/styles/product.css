@@ -9,6 +9,29 @@
   padding-top: 16px;
 }
 
+.product-filter {
+  padding: 0 10vw;
+  margin: 18px 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.product-filter label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.product-filter select {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(11, 57, 83, 0.2);
+  background: #fff;
+  font-family: inherit;
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -253,6 +276,10 @@
 }
 
 @media (max-width: 700px) {
+  .product-filter {
+    padding: 0 16px;
+  }
+
   .product-grid {
     grid-template-columns: 1fr;
   }

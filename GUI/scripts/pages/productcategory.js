@@ -9,7 +9,9 @@
       this.grid = document.getElementById("category-grid");
       this.title = document.getElementById("category-title");
       this.subtitle = document.getElementById("category-subtitle");
+      this.filter = document.getElementById("category-filter");
       this.category = new URLSearchParams(window.location.search).get("category");
+      this.products = [];
     }
 
     init() {
@@ -17,21 +19,63 @@
         return;
       }
 
-      const load = this.category
-        ? this.api.getProductsByCategory([this.category])
-        : this.api.getProducts();
+      this.api.getProducts()
+        .then((products) => {
+          this.products = Array.isArray(products) ? products : [];
+          this.renderFilterOptions();
+          this.applyFilter(this.category);
+        })
+        .catch((error) => this.renderError(error.message));
+    }
 
+    renderFilterOptions() {
+      if (!this.filter) {
+        return;
+      }
+
+      const categories = [...new Set(this.products.map((product) => product.categoryName))]
+        .filter((name) => name)
+        .sort((a, b) => a.localeCompare(b));
+
+      this.filter.innerHTML = '<option value="">Alle Produkte</option>';
+      categories.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        this.filter.appendChild(option);
+      });
+
+      if (this.category && categories.includes(this.category)) {
+        this.filter.value = this.category;
+      } else {
+        this.category = "";
+        this.filter.value = "";
+      }
+
+      this.filter.addEventListener("change", () => {
+        this.applyFilter(this.filter.value);
+      });
+    }
+
+    applyFilter(category) {
+      const normalized = category ? category.trim() : "";
+      const filtered = normalized
+        ? this.products.filter((product) => product.categoryName === normalized)
+        : this.products;
+
+      this.updateTitles(normalized);
+      this.renderProducts(filtered);
+    }
+
+    updateTitles(category) {
       if (this.title) {
-        this.title.textContent = this.category ? this.category : "Alle Produkte";
+        this.title.textContent = category || "Alle Produkte";
       }
       if (this.subtitle) {
-        this.subtitle.textContent = this.category
+        this.subtitle.textContent = category
           ? "Handgemachte Auswahl für deinen Hund."
           : "Unsere handgemachten Lieblingsstücke auf einen Blick.";
       }
-
-      load.then((products) => this.renderProducts(products))
-        .catch((error) => this.renderError(error.message));
     }
 
     renderProducts(products) {

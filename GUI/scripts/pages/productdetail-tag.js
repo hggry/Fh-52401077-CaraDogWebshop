@@ -19,7 +19,7 @@
     },
     "TOY-Monkeydot": {
       title: "Monkeydot Spielzeug",
-      text: "Der fest geknüpfte Knoten ist äußerst stabil und eignet sich zum Werfen, Zerren und Kauen. Nachhaltig aus Materialresten gefertigt und perfekt für spielbegeisterte Hunde.",
+      text: "Dieses Hundespielzeug wird überwiegend aus Materialresten hergestellt und ist damit besonders nachhaltig. Der fest geknüpfte Knoten ist äußerst stabil und eignet sich hervorragend für spielbegeisterte Hunde. Ob zum Werfen, für ausgiebige Zerrspiele oder als Kauspielzeug – dieses vielseitige Spielzeug sorgt für Beschäftigung und Spaß und hält auch stärkerer Beanspruchung stand. Auf Wunsch fertigen wir das Spielzeug auch farblich passend zu Leine oder Halsband an.",
       image: "assets/tag-toy-monkeydot.jpeg"
     }
   };
