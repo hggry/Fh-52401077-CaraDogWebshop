@@ -8,9 +8,9 @@
       this.grid = document.getElementById("product-grid");
       this.featuredSkus = [
         "TOY-MONKEYDOT-TARTAN",
-        "TOY-MONKEYDOT-PURPLE",
-        "TOY-MONKEYDOT-AVOCADO",
-        "LEINE-MERMAID-NEO"
+        "HALSBAND-LONDON",
+        "LEINE-ROYAL",
+        "LEINE-SUMMER-BREEZE"
       ];
     }
 
