@@ -5,37 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CaraDog - Produktdetails</title>
     <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/nav.css" />
     <link rel="stylesheet" href="styles/base-sections.css" />
     <link rel="stylesheet" href="styles/product.css" />
   </head>
   <body>
     <div class="page">
-      <header class="site-header">
+            <header class="site-header">
         <div class="logo-wrap">
           <img src="assets/Logo/CaraDog_Logo.png" alt="CaraDog Logo" class="logo" />
           <p class="logo-text">handgemachte Hundemode</p>
         </div>
-        <div class="nav-shell">
-          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
-            <span class="nav-toggle-bar"></span>
-            <span class="nav-toggle-bar"></span>
-            <span class="nav-toggle-bar"></span>
-            <span class="sr-only">Menü öffnen</span>
-          </button>
-          <nav class="site-nav" id="primary-nav" aria-label="Hauptnavigation">
-            <ul class="nav-list">
-              <li><a class="nav-link" href="index.html">Start</a></li>
-              <li><a class="nav-link is-active" href="productcategory.html">Shop</a></li>
-              <li><a class="nav-link" href="measurement-guide.html">Maßanleitung</a></li>
-              <li><a class="nav-link" href="aboutUs.html">Über uns</a></li>
-              <li><a class="nav-link" href="contact.html">Kontakt</a></li>
-            </ul>
-          </nav>
-          <a class="nav-cart" href="cart.html" aria-label="Warenkorb">
-            <img src="assets/cart.png" alt="" />
-          </a>
-        </div>
       </header>
+      <div class="nav-shell">
+        <a class="nav-logo" href="index.html" aria-label="CaraDog Startseite">
+          <img src="assets/Logo/CaraDog_Logo.png" alt="CaraDog Logo" />
+        </a>
+        <input class="nav-toggle" type="checkbox" id="nav-toggle" />
+        <label class="nav-toggle-label" for="nav-toggle">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="sr-only">Menü öffnen</span>
+        </label>
+        <nav class="site-nav" id="primary-nav" aria-label="Hauptnavigation">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="index.html">Start</a></li>
+            <li><a class="nav-link is-active" href="productcategory.html">Shop</a></li>
+            <li><a class="nav-link" href="measurement-guide.html">Ma?anleitung</a></li>
+            <li><a class="nav-link" href="aboutUs.html">Über uns</a></li>
+            <li><a class="nav-link" href="contact.html">Kontakt</a></li>
+          </ul>
+        </nav>
+        <a class="nav-cart" href="cart.html" aria-label="Warenkorb">
+          <img src="assets/cart.png" alt="" />
+        </a>
+      </div>
 
       <main>
         <section class="product-detail-section">
@@ -65,8 +70,7 @@
       </footer>
     </div>
 
-    <script src="scripts/core/nav.js"></script>
-    <script src="scripts/core/api-client.js"></script>
+        <script src="scripts/core/api-client.js"></script>
     <script src="scripts/core/cart-storage.js"></script>
     <script src="scripts/pages/productdetail-tag.js"></script>
     <script src="scripts/pages/productdetail.js"></script>
