@@ -15,7 +15,7 @@
     "MAT-Fettleder": {
       title: "Fettleder",
       text: "Das Leder besteht aus hochwertigem, durchgefärbtem Rindsleder europäischer Herkunft und wird intensiv gefettet. Dadurch ist es besonders widerstandsfähig gegenüber Nässe, bleibt zugleich extrem flexibel und liegt angenehm weich in der Hand. Da Leder ein reines Naturprodukt ist, gleicht keine Haut der anderen. Kleine Narben, unterschiedliche Strukturen oder leichte Farbabweichungen sind kein Mangel, sondern ein Zeichen von Echtheit und machen jedes Stück zu einem einzigartigen Unikat.",
-      image: "assets/products/HALSBAND-LONDON.jpg"
+      image: "assets/tag-mat-fettleder.png"
     },
     "TOY-Monkeydot": {
       title: "Monkeydot Spielzeug",
